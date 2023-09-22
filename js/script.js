@@ -247,6 +247,10 @@ async function search() {
 
 //  display search result
 function displaySearchResult(results) {
+  document.querySelector("#search-results").innerHTML = "";
+  document.querySelector("#search-results-heading").innerHTML = "";
+  document.querySelector("#pagination").innerHTML = "";
+
   results.forEach((result) => {
     const div = document.createElement("div");
     div.classList.add("card");
@@ -287,6 +291,41 @@ function displaySearchResult(results) {
         `;
 
     document.querySelector("#search-results").appendChild(div);
+  });
+
+  displayPagination();
+}
+
+// Pagination
+function displayPagination() {
+  const div = document.createElement("div");
+  div.classList.add("pagination");
+  div.innerHTML = `
+  <button class="btn btn-primary" id="prev">Prev</button>
+          <button class="btn btn-primary" id="next">Next</button>
+          <div class="page-counter">page ${global.search.page} of ${global.search.totalPages}</div>
+  `;
+  document.querySelector("#pagination").appendChild(div);
+
+  if (global.search.page === 1) {
+    document.querySelector("#prev").disabled = true;
+  }
+  if (global.search.page === global.search.totalPages) {
+    document.querySelector("#next").disabled = true;
+  }
+
+  // next page
+  document.querySelector("#next").addEventListener("click", async () => {
+    global.search.page++;
+    const { results, total_pages } = await searchAPIData();
+    displaySearchResult(results);
+  });
+
+  // Prev page
+  document.querySelector("#prev").addEventListener("click", async () => {
+    global.search.page--;
+    const { results, total_pages } = await searchAPIData();
+    displaySearchResult(results);
   });
 }
 
@@ -384,7 +423,7 @@ async function searchAPIData() {
   showSpinner();
 
   const response = await fetch(
-    `${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}`
+    `${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}&page=${global.search.page}`
   );
 
   const data = await response.json();
