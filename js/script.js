@@ -1,5 +1,3 @@
-// API => "6796e7b256c8b9ca81e5d0655511ed16"
-
 const global = {
   currentPage: window.location.pathname,
   search: {
@@ -15,7 +13,6 @@ const global = {
   },
 };
 
-// Display most popular movies
 async function displayPopularMovies() {
   const { results } = await fetchAPIData("movie/popular");
 
@@ -50,7 +47,6 @@ async function displayPopularMovies() {
   });
 }
 
-// Display most popular tv shows
 async function displayPopularShows() {
   const { results } = await fetchAPIData("tv/popular");
 
@@ -85,11 +81,10 @@ async function displayPopularShows() {
   });
 }
 
-// Display Movie Details
 async function movieDetails() {
   const movieId = window.location.search.split("=")[1];
   const movie = await fetchAPIData(`movie/${movieId}`);
-  // Overlay for background image
+
   displayBackgroundImage("movie", movie.backdrop_path);
 
   const div = document.createElement("div");
@@ -155,11 +150,10 @@ async function movieDetails() {
   document.querySelector("#movie-details").appendChild(div);
 }
 
-// Display TV Show Details
 async function tvShowDetails() {
   const showId = window.location.search.split("=")[1];
   const show = await fetchAPIData(`tv/${showId}`);
-  // Overlay for background image
+
   displayBackgroundImage("tv", show.backdrop_path);
 
   const div = document.createElement("div");
@@ -222,7 +216,6 @@ async function tvShowDetails() {
   document.querySelector("#show-details").appendChild(div);
 }
 
-// Search movies / tv shows
 async function search() {
   const queryStr = window.location.search;
   const urlParams = new URLSearchParams(queryStr);
@@ -245,7 +238,6 @@ async function search() {
   }
 }
 
-//  display search result
 function displaySearchResult(results) {
   document.querySelector("#search-results").innerHTML = "";
   document.querySelector("#search-results-heading").innerHTML = "";
@@ -296,7 +288,6 @@ function displaySearchResult(results) {
   displayPagination();
 }
 
-// Pagination
 function displayPagination() {
   const div = document.createElement("div");
   div.classList.add("pagination");
@@ -314,14 +305,12 @@ function displayPagination() {
     document.querySelector("#next").disabled = true;
   }
 
-  // next page
   document.querySelector("#next").addEventListener("click", async () => {
     global.search.page++;
     const { results, total_pages } = await searchAPIData();
     displaySearchResult(results);
   });
 
-  // Prev page
   document.querySelector("#prev").addEventListener("click", async () => {
     global.search.page--;
     const { results, total_pages } = await searchAPIData();
@@ -329,7 +318,6 @@ function displayPagination() {
   });
 }
 
-// Display SLIDER
 async function DisplaySlider() {
   const { results } = await fetchAPIData("movie/now_playing");
   results.forEach((movie) => {
@@ -375,7 +363,6 @@ function initSwiper() {
   });
 }
 
-// Backdrop for Details Pages
 function displayBackgroundImage(type, backgroundPath) {
   const overlayDiv = document.createElement("div");
   overlayDiv.style.backgroundImage = `url(https://image.tmdb.org/t/p/original/${backgroundPath})`;
@@ -397,7 +384,6 @@ function displayBackgroundImage(type, backgroundPath) {
   }
 }
 
-// Fetch data from API
 async function fetchAPIData(endpoint) {
   const API_KEY = global.api.apiKey;
   const API_URL = global.api.apiUrl;
@@ -415,7 +401,6 @@ async function fetchAPIData(endpoint) {
   return data;
 }
 
-// search API request
 async function searchAPIData() {
   const API_KEY = global.api.apiKey;
   const API_URL = global.api.apiUrl;
@@ -441,7 +426,6 @@ function hideSpinner() {
   document.querySelector(".spinner").classList.remove("show");
 }
 
-// Highlight active link
 function highlightActiveLink() {
   const links = document.querySelectorAll(".nav-link");
   links.forEach((link) => {
@@ -451,7 +435,6 @@ function highlightActiveLink() {
   });
 }
 
-// Show Alert
 function showAlert(message, className = "error") {
   const alertDiv = document.createElement("div");
   alertDiv.classList.add("alert", className);
@@ -465,7 +448,6 @@ function addCommasToNumber(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// Init App
 function init() {
   switch (global.currentPage) {
     case "/":
